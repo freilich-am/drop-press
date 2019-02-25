@@ -1,0 +1,6 @@
+*#
+*.class
+*.csv
+/tnkh*
+*.hs
+.#*

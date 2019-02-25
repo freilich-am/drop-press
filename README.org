@@ -1,0 +1,39 @@
+* Structure of this file:
+This readme now includes 3 major sections (after this one): getting started, what is this about, what's in progress/in the works.
+
+** How to get started
+Right now, getting started couldn't be simpler:
+First, download a copy of the books of tanakh you'd like to analyze from https://tanach.us .
+Note that there is no support yet of Sifrei Emet = Iyov Mishlei Tehillim. 
+Go to Tropper.java and change the path to the file you've downloaded.
+Compile the file, perhaps with `javac Tropper.java`. 
+Run it with `java Tropper`.
+Right now the output prints to standard out. 
+
+** What is this about
+This is an open ended project looking for structure in the cantillation marks that accompany Tanakh.
+The cantiallation marks are divided into disjunctives and conjunctives. 
+The disjunctives will recursively (perhaps some scare quotes are called for) divide the verse into sections. 
+For example, first level disjunctives usually mark the end of the first half of the verse and the end of the second.
+(The end of the first half would be marked by an Etnachta, a specific first level disjunct, and the second half with a sof pasuk, the other first level disjunct.)
+But then those halves can be broken into a 2+ sections with second level disjuncts. 
+And those 2nd level phrases can be broken into 3rd level phrases which can in turn be broken into 4th level phrases. 
+
+Any number of conjunctives can come between disjunctives. 
+
+As it stands, this project records what we're calling "transitions". 
+
+Let's illustrate this by way of example:
+The marks (and disjunctive levels) of the first pasuk in esther look like this:
+Tipcha 1 Munach 4 Etnachta 0
+Munach 4 Revii 2 Pashta 2 Munach 4 Zakef Katon 1 | Tevir 2 Mercha 4 Tipcha 1 Sof Pasuk 0
+
+Actually, I'm rethinking everything about this project. Let me get back to this. *single drop of sweat emoji*
+
+** What's in progress:
+Well, i'm rethinking the structure of this. 
+A few other things that would be nice: 
+*** TODO A nice way to generate readable data from this
+*** TODO Support for Sifrei Emet
+*** TODO A better explanation of what's going on
+*** TODO Other forms of analysis (kind of open ended...)

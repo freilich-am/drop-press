@@ -1,31 +1,44 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
 
-public class Tropper {
+public class PhraseCounter {
     public static void main (String[] args) throws Exception {
         // obviously this path should be replaced with whatever the path is on your machine to the text of the book you want
         // i was using files that are available on https://tanach.us
         File file = new File("/Users/adam/code/drop-press/tnkh/Esther.acc.txt"); 
         
-        int[][] transitions = new int[51][51];
+        HashMap<String, Integer> phraseCounts = new HashMap<String, Integer>(); // is this right
         
         BufferedReader br = new BufferedReader(new FileReader(file)); 
         
         String st; 
         while ((st = br.readLine()) != null)  {
-            analyzePasuk(st, transitions);
-        } 
+            analyzePasuk(st, phraseCounts, 3, false);
+        }
 
-        for (int i = 0; i<51; i++) {
-            for (int j = 0; j < 51; j++) {
-                if (transitions[i][j] != 0) {
-                    System.out.print(getName((char)(i + 1425)));
-                    System.out.print("=>");
-                    System.out.print(getName((char)(j + 1425)));
-                    System.out.print(": ");
-                    System.out.println(transitions[i][j]);
-                }
+        int count = 0;
+
+        // TODO: print phraseCounts
+        for (Map.Entry<String, Integer> entry : phraseCounts.entrySet()) {
+            if (entry.getValue() != 1) {
+                System.out.println(legibleize(entry.getKey()) + entry.getValue());
+            } else {
+                count++;
             }
         }
+        System.out.println(count);
+    }
+
+    public static String legibleize(String phrase) {
+        String legible = new String("");
+        for (int i = 0; i < phrase.length(); i++) {
+            char taam = phrase.charAt(i);
+            legible += getName(taam) + " " + getLevel(taam) + ", ";
+        }
+        return legible;
     }
 
     public static String getName(char trop) {
@@ -66,8 +79,9 @@ public class Tropper {
         return "";
     }
 
-    public static void analyzePasuk (String pasuk, int[][] transitions) {
-        char[] stack = new char[]{' ', ' ', ' ', ' ', ' '};
+    public static void analyzePasuk (String pasuk, HashMap<String, Integer> phraseCounts, int threshold, boolean excludeConj) {
+        // char[] stack = new char[]{' ', ' ', ' ', ' ', ' '};
+        String phrase = new String("");
         boolean initialSofPasukFlag = false;
         for (int i = 0; i < pasuk.length(); i++) {
             char taam = pasuk.charAt(i);
@@ -81,36 +95,18 @@ public class Tropper {
             }
             initialSofPasukFlag = true;
             int level = getLevel(taam);
-            System.out.print(getName(taam) + level);
-            if (level == 4) {
-                if (stack[level] != ' ') {
-                    recordTransition(stack[level], taam, transitions);
-                    stack[level] = taam;
-                } else {
-                    stack[level] = taam;
-                }
-            } else {
-                if (level + 1 < 4 && stack[level+1] != ' ') {
-                    recordTransition(stack[level + 1], taam, transitions);
-                    stack[level + 1] = ' ';
-                }
-                if (stack[4] != ' ') {
-                    recordTransition(stack[4], taam, transitions);
-                    stack[4] = ' ';
-                }
-                if (stack[level+1] != ' ') {
-                    recordTransition(stack[level + 1], taam, transitions);
-                    stack[level + 1] = ' ';
-                }
-                if (stack[level] != ' ') {
-                    recordTransition(stack[level], taam, transitions);
-                    stack[level] = taam;
-                } else {
-                    stack[level] = taam;
-                }
+            // System.out.print(getName(taam) + level);
+            if (excludeConj && level == 4) {
+                continue;
+            }
+            phrase += taam;
+            if (level <= threshold) {
+                int count = phraseCounts.containsKey(phrase) ? phraseCounts.get(phrase) : 0;
+                phraseCounts.put(phrase, count + 1);
+                phrase = new String("");
             }
         }
-        if (initialSofPasukFlag) System.out.println();
+        // if (initialSofPasukFlag) System.out.println();
     }
 
     public static boolean isTrop (char maybeTaam) {
